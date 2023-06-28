@@ -3,6 +3,7 @@ package Activities
 import Utilities.Utilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.example.weatherappkotlin.R
@@ -15,30 +16,29 @@ import kotlinx.android.synthetic.main.item_forecast.icon
 import kotlinx.android.synthetic.main.item_forecast.minTemperature
 import java.text.DateFormat
 
-class DetailActivity : AppCompatActivity () {
+class DetailActivity : AppCompatActivity() {
 
     companion object {
         const val ID = "DetailActivity:id"
-        const val CITY_NAME = "DetailActivity:citiName"
+        const val CITY_NAME = "DetailActivity:cityName"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
+        val dayId = intent.getLongExtra(ID, -1)
+
+        Log.d("Rodrigo", "DetailActivity, ID: " + intent.getLongExtra(ID, -1))
+        Log.d("Rodrigo", "DetailActivity, CITY_NAME: " + intent.getStringExtra(CITY_NAME))
+
         title = intent.getStringExtra(CITY_NAME)
 
-        Thread {
-            // val result = RequestDayForecastCommand(intent.getLongExtra(ID, -1)).execute
-            val result = ForecastDBbHelper.FORECAST.requestForecast("94043", 1)
+        val result = ForecastDBbHelper.FORECAST.requestForecast("94043", dayId)
 
-            if (result != null) {
-                runOnUiThread {
-                    bindForecast(result)
-                }
-            }
+        if (result != null) {
+                bindForecast(result)
         }
-
     }
 
     private fun bindForecast(forecast: Forecast) = with(forecast) {
@@ -47,16 +47,6 @@ class DetailActivity : AppCompatActivity () {
         weatherDescription.text = description
         bindWeather(high to maxTemperature, low to minTemperature)
     }
-
-//    private fun bindWeather(vararg views: Pair<Int,TextView>) = views.forEach{
-//        it.second.text = "${it.first}"
-//        it.second.textcolor = color(when(it.first)){
-//            in -50..0 -> android.R.color.holo_red_dark
-//            in 0..15 -> android.R.color.holo_orange_dark
-//            else -> android.R.color.holo_green_dark
-//        })
-//    }
-
 
     private fun bindWeather(vararg views: Pair<Int, TextView>) {
         views.forEach { (value, textView) ->

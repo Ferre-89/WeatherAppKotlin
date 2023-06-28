@@ -17,6 +17,10 @@ import com.example.weatherappkotlin.data.db.ForecastDBbHelper
 import com.example.weatherappkotlin.domain.commands.RequestForecastCommand
 import com.example.weatherappkotlin.ui.ui.WeatherAppKotlinTheme
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,50 +31,81 @@ class MainActivity : AppCompatActivity() {
         loadForecast()
 
         forecastList.layoutManager = LinearLayoutManager(this)
-
-        //Toast.makeText(this@MainActivity, "Its a toast!", Toast.LENGTH_SHORT).show()
     }
 
     private fun loadForecast() {
-        Thread {
-            // Obtengo resultado del JSON
-            val result = RequestForecastCommand("94043").execute()
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    val forecastResult = RequestForecastCommand("94043").execute()
 
-            // Guardo el resultado en la base.
-            ForecastDBbHelper.FORECAST.saveForecast(result, "94043")
+                    // Guardo el resultado en la base.
+                    ForecastDBbHelper.FORECAST.saveForecast(forecastResult, "94043")
 
-            // Obtengo el listado de la base y se lo paso al adaptador
-            val list = ForecastDBbHelper.FORECAST.requestAllForecast("94043")
-            //  Log.d("Rodrigo", "Resultado: " + result)
-
-            runOnUiThread {
-
-//                forecastList.adapter = ForecastListAdapter(list) { forecast ->
-//                    ForecastDBbHelper.FORECAST.requestForecast(
-//                        "94043", forecast.id
-//                    )
-//                }
-
-                val adapter = ForecastListAdapter(list) {
-                    val intent = Intent(this, DetailActivity::class.java)
-                    intent.putExtra(DetailActivity.ID, it.id)
-                    intent.putExtra(DetailActivity.CITY_NAME, result.city)
-                    startActivity(intent)
+                    forecastResult
                 }
 
-                Log.d("Rodrigo", "Main: ")
-                 forecastList.adapter = adapter
+                // Obtengo el listado de la base y se lo paso al adaptador
+                val list = withContext(Dispatchers.IO) {
+                    ForecastDBbHelper.FORECAST.requestAllForecast("94043")
+                }
 
-                //  forecastList.adapter = ForecastListAdapter(result, object : ForecastListAdapter.OnItemClickListener{
-                //   override fun invoke(forecast: Forecast){
-                //      Toast.makeText(this@MainActivity, forecast.date, Toast.LENGTH_SHORT).show()
-                //   }
+                runOnUiThread {
+                    val adapter = ForecastListAdapter(list) { forecast ->
+                        val intent = Intent(this@MainActivity, DetailActivity::class.java)
+                        intent.putExtra(DetailActivity.ID, forecast.id)
+                        intent.putExtra(DetailActivity.CITY_NAME, result.city)
+                        startActivity(intent)
 
+                        Log.d("Rodrigo", "Main: " + forecast.id)
+                        Log.d("Rodrigo", "Main: " + result.city)
+                    }
+
+                    forecastList.adapter = adapter
+                }
+            } catch (e: Exception) {
+                // Handle exceptions
+                Log.e("Rodrigo", "Error loading forecast: ${e.message}")
             }
-
-        }.start()
+        }
     }
+
+
+//        Thread {
+//            // Obtengo resultado del JSON
+//            val result = RequestForecastCommand("94043").execute()
+//
+//            // Guardo el resultado en la base.
+//            ForecastDBbHelper.FORECAST.saveForecast(result, "94043")
+//
+//            // Obtengo el listado de la base y se lo paso al adaptador
+//            val list = ForecastDBbHelper.FORECAST.requestAllForecast("94043")
+//            //  Log.d("Rodrigo", "Resultado: " + result)
+//
+//            runOnUiThread {
+//
+//                val adapter = ForecastListAdapter(list) {
+//                    val intent = Intent(this@MainActivity, DetailActivity::class.java)
+//                    intent.putExtra(DetailActivity.ID, it.id)
+//                    intent.putExtra(DetailActivity.CITY_NAME, result.city)
+//                    startActivity(intent)
+//
+//                    Log.d("Rodrigo", "Main: " + it.id)
+//                    Log.d("Rodrigo", "Main: " + result.city)
+//                }
+//
+//                 forecastList.adapter = adapter
+//
+//                //  forecastList.adapter = ForecastListAdapter(result, object : ForecastListAdapter.OnItemClickListener{
+//                //   override fun invoke(forecast: Forecast){
+//                //      Toast.makeText(this@MainActivity, forecast.date, Toast.LENGTH_SHORT).show()
+//                //   }
+//
+//            }
+//
+//        }.start()
 }
+//    }
 
 fun toast(elContexto: Context, forecastDate: String) {
     Toast.makeText(elContexto, forecastDate, Toast.LENGTH_SHORT).show()
