@@ -1,6 +1,8 @@
 package Utilities
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.example.weatherappkotlin.domain.model.Forecast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_forecast.dateText
@@ -23,5 +25,9 @@ enum class Utilities {
     fun toDateString(dateFormat: Int = DateFormat.MEDIUM): String {
         val df = DateFormat.getDateInstance(dateFormat, Locale.getDefault())
         return df.format(this)
+    }
+
+    fun showToast(elContexto: Context, text: String, duration: Int) {
+        Toast.makeText(elContexto, text, duration).show()
     }
 }
