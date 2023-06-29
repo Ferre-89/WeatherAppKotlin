@@ -40,7 +40,6 @@ class ForecastListAdapter(private val weekForecast: ForecastList,
               //  Picasso.with(itemView.context).load(iconUrl).into(iconView)
                 Picasso.get().load(iconUrl).into(icon)
                 dateText.text = date
-                Log.d("Rodrigo", "ForecastAdapter, id: " + id)
                 theId.text = forecast.id.toString()
                 descriptionText.text = description
                 maxTemperature.text = "${high}º"

@@ -3,28 +3,22 @@ package Utilities
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import com.example.weatherappkotlin.domain.model.Forecast
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.item_forecast.dateText
-import kotlinx.android.synthetic.main.item_forecast.descriptionText
-import kotlinx.android.synthetic.main.item_forecast.icon
-import kotlinx.android.synthetic.main.item_forecast.maxTemperature
-import kotlinx.android.synthetic.main.item_forecast.minTemperature
-import kotlinx.android.synthetic.main.item_forecast.theId
 import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 enum class Utilities {
     WEATHER;
 
-//    fun Long.toDateString(dateFormat: Int = DateFormat.MEDIUM): String {
-//        val df = DateFormat.getDateInstance(dateFormat, Locale.getDefault())
-//        return df.format(this)
-//    }
+    fun toDateString(dateFormat: Int = DateFormat.MEDIUM, date:String): String {
 
-    fun toDateString(dateFormat: Int = DateFormat.MEDIUM): String {
-        val df = DateFormat.getDateInstance(dateFormat, Locale.getDefault())
-        return df.format(this)
+        val inputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+        val outputFormat = DateFormat.getDateInstance(dateFormat, Locale.getDefault())
+
+        val parsedDate: Date = inputFormat.parse(date) as Date
+
+        return outputFormat.format(parsedDate)
     }
 
     fun showToast(elContexto: Context, text: String, duration: Int) {

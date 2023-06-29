@@ -125,7 +125,7 @@ enum class ForecastDBbHelper {
 
             realm.insert(dayForecastTable)
 
-            Log.d("Rodrigo", "Forecast - descripcion: " + forecastList[i].description + ", date: ")
+//            Log.d("Rodrigo", "Forecast - descripcion: " + forecastList[i].description + ", date: ")
 
             i++
         }
