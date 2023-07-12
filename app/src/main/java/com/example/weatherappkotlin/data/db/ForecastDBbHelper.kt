@@ -75,7 +75,7 @@ enum class ForecastDBbHelper {
             )
             forecastList.add(forecast)
         }
-
+        Log.d("Forecast", "Forecast table   updated successfully")
         val cityForecast: CityForecastTable =
             realm.where(CityForecastTable::class.java).equalTo("id", zipCode).findFirst()!!
 

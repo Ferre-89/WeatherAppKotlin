@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.item_forecast.minTemperature
 import java.nio.file.Files.find
 import java.text.DateFormat
 
-class DetailActivity : AppCompatActivity() {
+class DetailActivity : AppCompatActivity(), ToolbarManager {
 
     companion object {
         const val ID = "DetailActivity:id"
@@ -28,6 +28,10 @@ class DetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+
+        initToolBar()
+        toolbarTitle = intent.getStringExtra(CITY_NAME).toString()
+        enableHomeAsUp { onBackPressed() }
 
         val dayId = intent.getLongExtra(ID, -1)
 
@@ -73,6 +77,10 @@ class DetailActivity : AppCompatActivity() {
                 }
             )
         }
+    }
+
+    override val toolbar: androidx.appcompat.widget.Toolbar by lazy {
+        findViewById(R.id.toolbar)
     }
 
 }

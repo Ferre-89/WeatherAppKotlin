@@ -1,36 +1,33 @@
 package com.example.weatherappkotlin
 
 import Activities.DetailActivity
-import android.content.Context
+import Activities.ToolbarManager
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherappkotlin.adapters.ForecastListAdapter
 import com.example.weatherappkotlin.data.db.ForecastDBbHelper
 import com.example.weatherappkotlin.domain.commands.RequestForecastCommand
-import com.example.weatherappkotlin.ui.ui.WeatherAppKotlinTheme
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ToolbarManager {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        initToolBar()
 
         loadForecast()
 
         forecastList.layoutManager = LinearLayoutManager(this)
+        attachToScroll(forecastList)
     }
 
     private fun loadForecast() {
@@ -62,6 +59,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     forecastList.adapter = adapter
+                    toolbarTitle = "${result.city} (${result.country})"
                 }
             } catch (e: Exception) {
                 // Handle exceptions
@@ -69,4 +67,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    override val toolbar: Toolbar by lazy {
+        findViewById(R.id.toolbar)
+    }
+
+
 }
