@@ -1,6 +1,7 @@
 package Activities
 
 import Utilities.Utilities
+import android.content.Intent
 import android.view.View
 import android.widget.Toast
 import android.widget.Toolbar
@@ -23,17 +24,14 @@ interface ToolbarManager {
         toolbar.inflateMenu(R.menu.menu_main)
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.action_settings -> Utilities.WEATHER.showToast(
-                    toolbar.context,
-                    "Settings",
-                    Toast.LENGTH_LONG
-                )
+                R.id.action_settings -> {
+                    val intent = Intent(toolbar.context, SettingsActivity::class.java)
+                    toolbar.context.startActivity(intent)
+                }
 
-                else -> Utilities.WEATHER.showToast(
-                    toolbar.context,
-                    "Unknown option",
-                    Toast.LENGTH_LONG
-                )
+                else -> {
+                    Utilities.WEATHER.showToast(App.instance, "Unknown option", Toast.LENGTH_LONG)
+                }
             }
             true
         }

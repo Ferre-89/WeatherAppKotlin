@@ -1,6 +1,7 @@
 package com.example.weatherappkotlin
 
 import Activities.DetailActivity
+import Activities.SettingsActivity
 import Activities.ToolbarManager
 import android.content.Intent
 import android.os.Bundle
@@ -12,6 +13,7 @@ import com.example.weatherappkotlin.adapters.ForecastListAdapter
 import com.example.weatherappkotlin.data.db.ForecastDBbHelper
 import com.example.weatherappkotlin.domain.commands.RequestForecastCommand
 import com.example.weatherappkotlin.domain.model.ForecastList
+import com.example.weatherappkotlin.ui.ui.utils.DelegatesExt
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,12 +22,16 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity(), ToolbarManager {
 
+    private val zipCode: Long by DelegatesExt.preference(
+        this,
+        SettingsActivity.ZIP_CODE,
+        SettingsActivity.DEFAULT_ZIP
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initToolBar()
-
-        loadForecast()
 
         forecastList.layoutManager = LinearLayoutManager(this)
         attachToScroll(forecastList)
@@ -35,7 +41,7 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
         CoroutineScope(Dispatchers.Main).launch {
             try {
                 val result = withContext(Dispatchers.IO) {
-                    val forecastResult = RequestForecastCommand("94043").execute()
+                    val forecastResult = RequestForecastCommand(zipCode.toString()).execute()
 
                     // Guardo el resultado en la base.
                     ForecastDBbHelper.FORECAST.saveForecast(forecastResult, "94043")
@@ -43,11 +49,11 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
                     forecastResult
                 }
 
-                val listadoForecast : ForecastList? = null
+                val listadoForecast: ForecastList? = null
 
                 // Obtengo el listado de la base y se lo paso al adaptador
                 val list = withContext(Dispatchers.IO) {
-                    listadoForecast.let {  ForecastDBbHelper.FORECAST.requestAllForecast("94043") }
+                    listadoForecast.let { ForecastDBbHelper.FORECAST.requestAllForecast("94043") }
 
                 }
 
@@ -76,5 +82,8 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
         findViewById(R.id.toolbar)
     }
 
-
+    override fun onResume() {
+        super.onResume()
+        loadForecast()
+    }
 }

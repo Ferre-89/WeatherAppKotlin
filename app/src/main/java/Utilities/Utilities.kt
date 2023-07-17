@@ -11,7 +11,7 @@ import java.util.Locale
 enum class Utilities {
     WEATHER;
 
-    fun toDateString(dateFormat: Int = DateFormat.MEDIUM, date:String): String {
+    fun toDateString(dateFormat: Int = DateFormat.MEDIUM, date: String): String {
 
         val inputFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
         val outputFormat = DateFormat.getDateInstance(dateFormat, Locale.getDefault())

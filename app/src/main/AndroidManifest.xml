@@ -20,11 +20,15 @@
         <activity
             android:name="Activities.DetailActivity"
             android:exported="false"
-            android:theme="@style/Theme.WeatherAppKotlin"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.WeatherAppKotlin" />
         <meta-data
             android:name="android.support.PARENT.ACTIVITY"
             android:value="com.antonioleiva.weatherapp.activities.MainActivity" />
+
+        <activity
+            android:name="Activities.SettingsActivity"
+            android:label="@string/settings" />
 
         <activity
             android:name=".MainActivity"
