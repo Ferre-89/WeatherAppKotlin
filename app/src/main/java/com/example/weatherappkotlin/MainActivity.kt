@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weatherappkotlin.adapters.ForecastListAdapter
 import com.example.weatherappkotlin.data.db.ForecastDBbHelper
 import com.example.weatherappkotlin.domain.commands.RequestForecastCommand
+import com.example.weatherappkotlin.domain.model.ForecastList
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,9 +43,12 @@ class MainActivity : AppCompatActivity(), ToolbarManager {
                     forecastResult
                 }
 
+                val listadoForecast : ForecastList? = null
+
                 // Obtengo el listado de la base y se lo paso al adaptador
                 val list = withContext(Dispatchers.IO) {
-                    ForecastDBbHelper.FORECAST.requestAllForecast("94043")
+                    listadoForecast.let {  ForecastDBbHelper.FORECAST.requestAllForecast("94043") }
+
                 }
 
                 runOnUiThread {

@@ -31,6 +31,7 @@ class DetailActivity : AppCompatActivity(), ToolbarManager {
 
         initToolBar()
         toolbarTitle = intent.getStringExtra(CITY_NAME).toString()
+
         enableHomeAsUp { onBackPressed() }
 
         val dayId = intent.getLongExtra(ID, -1)
