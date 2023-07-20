@@ -15,6 +15,9 @@ import kotlinx.android.synthetic.main.activity_detail.maxTemperature
 import kotlinx.android.synthetic.main.activity_detail.weatherDescription
 import kotlinx.android.synthetic.main.item_forecast.icon
 import kotlinx.android.synthetic.main.item_forecast.minTemperature
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.nio.file.Files.find
 import java.text.DateFormat
 
@@ -41,10 +44,12 @@ class DetailActivity : AppCompatActivity(), ToolbarManager {
 
         title = intent.getStringExtra(CITY_NAME)
 
-        val result = ForecastDBbHelper.FORECAST.requestForecast("94043", dayId)
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = ForecastDBbHelper.FORECAST.requestForecast("94043", dayId)
 
-        if (result != null) {
-            bindForecast(result)
+            if (result != null) {
+                bindForecast(result)
+            }
         }
     }
 
